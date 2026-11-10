@@ -1,0 +1,3 @@
+09:14:01 INFO study_id=LAB-001 event=upload_accepted
+09:14:02 ERROR study_id=LAB-002 event=validation_failed missing_field=modality
+09:14:03 ERROR study_id=LAB-001 event=validation_failed missing_field=accession_number
