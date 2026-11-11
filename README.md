@@ -60,3 +60,16 @@ The API defaults to `saas_support_lab` when `DATABASE_URL` is omitted. The comma
 See [the database configuration incident](case-api-503.md) for a simulated HTTP `503` failure and recovery. PostgreSQL errors are recorded in the server terminal.
 
 This API uses Flask's development server and listens locally on port `8000`.
+
+## Test the API with Postman
+
+Import `postman/saas-support-lab.postman_collection.json` into Postman. The collection includes a `base_url` variable set to `http://127.0.0.1:8000`.
+
+Start the Flask API before sending requests. The collection contains two requests with four automated checks:
+
+- **Get existing study** checks HTTP `200`, the requested study identifier and a non-empty status.
+- **Get missing study** checks HTTP `404`, the error message and the missing study identifier.
+
+Both requests were verified after importing the exported JSON.
+
+If Postman reports `ECONNREFUSED`, check that Flask is running at the address and port configured in `base_url`.
