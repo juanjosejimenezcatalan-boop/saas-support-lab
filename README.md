@@ -34,3 +34,29 @@ grep -F 'study_id=LAB-001 ' logs/validation.log
 ## Case report
 
 See [the support ticket](case-lab-001.md) for the diagnosis, the customer response and the verification after the simulated resubmission. All study data and log entries are fictional.
+
+## Run the local API
+
+After creating the database with `sql/01-setup.sql`, run these commands from the repository folder:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+DATABASE_URL="dbname=saas_support_repro connect_timeout=5" python -m flask --app app run --host 127.0.0.1 --port 8000
+```
+
+Keep the server running and open another terminal to send requests:
+
+```bash
+curl -i http://127.0.0.1:8000/studies/LAB-001
+curl -i http://127.0.0.1:8000/studies/LAB-999
+```
+
+The first request returns HTTP `200` with the stored study status. A fresh setup contains `LAB-001` in `received`. The second request returns HTTP `404` because `LAB-999` does not exist.
+
+The API defaults to `saas_support_lab` when `DATABASE_URL` is omitted. The command above explicitly selects the reproduction database created earlier in this README.
+
+See [the database configuration incident](case-api-503.md) for a simulated HTTP `503` failure and recovery. PostgreSQL errors are recorded in the server terminal.
+
+This API uses Flask's development server and listens locally on port `8000`.
