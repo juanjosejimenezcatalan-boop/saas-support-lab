@@ -73,3 +73,7 @@ Start the Flask API before sending requests. The collection contains two request
 Both requests were verified after importing the exported JSON.
 
 If Postman reports `ECONNREFUSED`, check that Flask is running at the address and port configured in `base_url`.
+
+## Diagnose connectivity
+
+See [the local connectivity guide](troubleshooting-connectivity.md) for a practical sequence using `lsof`, `nc` and `curl -v`. The exercise covers a stopped Flask server, connection refusal and recovery after restart.
