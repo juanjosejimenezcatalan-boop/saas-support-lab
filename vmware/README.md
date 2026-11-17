@@ -132,3 +132,8 @@ private keys, generated seed ISOs and live databases stay outside Git.
 - [Ubuntu cloud images](https://cloud-images.ubuntu.com/noble/current/)
 - [Cloud-init NoCloud](https://cloudinit.readthedocs.io/en/latest/reference/datasources/nocloud.html)
 - [Fusion ARM compatibility](https://knowledge.broadcom.com/external/article/315602/compatibility-considerations-for-arm-gue.html)
+
+For Bearer tokens, add LAB_TOKEN_SECRET to the protected EnvironmentFile.
+[Token setup](../case-token-401.md) explains its generation and lifetime.
+[SQL analysis](../case-sql-incidents.md) uses migration 03 and optional fixtures;
+the existing VMware validation and snapshot precede these extensions.

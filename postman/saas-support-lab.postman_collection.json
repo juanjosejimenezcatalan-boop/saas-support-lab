@@ -247,6 +247,132 @@
           }
         }
       ]
+    },
+    {
+      "name": "Obtain access token",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "alice",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{alice_password}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/auth/token"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set(\"access_token\", \"\");"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Token issued\", function () { pm.response.to.have.status(200); const body = pm.response.json(); pm.expect(body.token_type).to.eql(\"Bearer\"); pm.expect(body.expires_in).to.eql(900); pm.expect(body.access_token).to.be.a(\"string\").and.not.empty; pm.collectionVariables.set(\"access_token\", body.access_token); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bearer own clinic",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected token response\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bearer other clinic denied",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-002"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected token response\", function () { pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invalid bearer token",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "invalid-lab-token",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected token response\", function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -264,6 +390,10 @@
     },
     {
       "key": "carol_password",
+      "value": ""
+    },
+    {
+      "key": "access_token",
       "value": ""
     }
   ]

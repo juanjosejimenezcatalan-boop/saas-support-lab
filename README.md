@@ -108,5 +108,17 @@ TEST_DATABASE_URL='dbname=postgres connect_timeout=5' python -m unittest discove
 
 The suite creates and removes a randomly named temporary schema. The database
 role must have schema-creation permission. It never migrates the existing lab
-tables. Ten tests cover clinic isolation, roles, credentials, a missing study,
+tables. The regression suite covers clinic isolation, roles, credentials, a missing study,
 parameterized identifiers, database failure and migration preservation.
+
+## Token authentication and SQL incident analysis
+
+- [Token issuance, expiry and 401 recovery](case-token-401.md) adds signed
+  15-minute Bearer tokens while preserving Basic Auth support.
+- [SQL incident investigation](case-sql-incidents.md) adds dated synthetic
+  failures, clinic aggregates, retry-aware impact counts and historical reports.
+
+The Postman collection includes token issuance, authorized Bearer access, a
+cross-clinic denial and an invalid token. Its exported secret values are empty.
+The PostgreSQL regression suite now contains 21 tests, including token expiry,
+role changes, migration reruns, report results and interval boundaries.
