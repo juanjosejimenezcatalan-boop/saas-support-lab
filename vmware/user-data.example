@@ -1,0 +1,28 @@
+#cloud-config
+manage_etc_hosts: true
+users:
+  - name: lab
+    groups: [sudo]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - REPLACE_WITH_YOUR_SSH_PUBLIC_KEY
+ssh_pwauth: false
+package_update: true
+packages:
+  - openssh-server
+  - open-vm-tools
+  - postgresql
+  - python3-venv
+  - git
+  - curl
+runcmd:
+  - [systemctl, enable, --now, ssh]
+  - [systemctl, enable, --now, postgresql]
+  - [sudo, -u, postgres, createuser, lab]
+  - [sudo, -u, postgres, createdb, -O, lab, saas_support_lab]
+  - [sudo, -u, lab, git, clone, https://github.com/juanjosejimenezcatalan-boop/saas-support-lab.git, /home/lab/saas-support-lab]
+  - [sudo, -u, lab, psql, -d, saas_support_lab, -v, ON_ERROR_STOP=1, -f, /home/lab/saas-support-lab/sql/01-setup.sql]
+  - [sudo, -u, lab, python3, -m, venv, /home/lab/saas-support-lab/.venv]
+  - [sudo, -u, lab, /home/lab/saas-support-lab/.venv/bin/python, -m, pip, install, -r, /home/lab/saas-support-lab/requirements.txt]

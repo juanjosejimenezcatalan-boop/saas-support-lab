@@ -77,3 +77,11 @@ If Postman reports `ECONNREFUSED`, check that Flask is running at the address an
 ## Diagnose connectivity
 
 See [the local connectivity guide](troubleshooting-connectivity.md) for a practical sequence using `lsof`, `nc` and `curl -v`. The exercise covers a stopped Flask server, connection refusal and recovery after restart.
+
+## Run the lab in VMware Fusion
+
+See [the Ubuntu ARM64 virtual machine lab](vmware/README.md) for deployment,
+Mac-to-guest checks, service recovery and snapshots.
+
+Spanish interview notes for this extension are available in
+[Notas de entrevista · VMware](docs/notas-entrevista-vmware.md).
