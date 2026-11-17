@@ -140,3 +140,16 @@ keep VM disks and snapshots private and outside Git.
 The earlier snapshot rollback test remains recorded above. The new snapshot's
 creation and subsequent normal boot were verified; a rollback to this additional
 snapshot was not separately performed.
+
+### Desktop Postman with Local Vault
+
+Configured three practice passwords in Postman Local Vault and linked the local
+collection password variables using vault references. No password values were
+shared to the cloud workspace. Restarted Postman after a transient EHOSTUNREACH
+error; macOS already showed its Local Network permission enabled.
+
+Executed `SaaS Support Lab - VMware practice` against the guest from the desktop
+Collection Runner. The UI reported 13 tests, zero errors and successful completion
+of all 11 requests, including token issuance and authorized/denied Bearer access.
+The run used local mode with console logging, response persistence and variable
+persistence disabled. The repository export retains empty secret values.
