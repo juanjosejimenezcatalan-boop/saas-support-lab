@@ -3,7 +3,7 @@
 This extends the support exercise to a Linux virtual machine. The Mac acts as
 an HTTP client; Ubuntu runs Flask and PostgreSQL.
 
-[Observed validation results](validation.md) · [Spanish interview notes](../docs/notas-entrevista-vmware.md)
+[Observed validation results](validation.md)
 
 ## Design
 
