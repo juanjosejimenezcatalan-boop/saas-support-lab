@@ -5,6 +5,20 @@ an HTTP client; Ubuntu runs Flask and PostgreSQL.
 
 [Observed validation results](validation.md)
 
+## Access-control update
+
+Before running the current API, apply `sql/02-access-control.sql` and configure
+local passwords as described in [the access-control case](../case-access-403.md).
+The cloud-init example applies both SQL scripts. Copy the service unit, create
+`/etc/saas-support-lab.env` locally with LAB_ALICE_PASSWORD, LAB_BOB_PASSWORD and
+LAB_CAROL_PASSWORD, protect it with mode 600 owned by root, then restart the unit.
+Do not place that environment file in Git.
+
+For `check-api.py`, set LAB_API_USERNAME=alice and LAB_API_PASSWORD to Alice's
+local password. Postman needs its three password variables set locally.
+The validation record and existing snapshot describe the earlier API version.
+The current authorization regression suite was run on PostgreSQL 17 on the Mac.
+
 ## Design
 
 - VMware Fusion 26H1u1 on an Apple Silicon Mac.
@@ -57,8 +71,8 @@ On the Mac, replace `VM_IP` with that address:
 
 ```bash
 nc -vz VM_IP 8000
-curl -i http://VM_IP:8000/studies/LAB-001
-curl -i http://VM_IP:8000/studies/LAB-999
+curl -i -u alice http://VM_IP:8000/studies/LAB-001
+curl -i -u alice http://VM_IP:8000/studies/LAB-999
 python3 vmware/check-api.py http://VM_IP:8000
 ```
 

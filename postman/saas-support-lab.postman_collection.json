@@ -32,6 +32,21 @@
             "studies",
             "LAB-001"
           ]
+        },
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "alice",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{alice_password}}",
+              "type": "string"
+            }
+          ]
         }
       },
       "response": []
@@ -61,15 +76,195 @@
             "studies",
             "LAB-999"
           ]
+        },
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "alice",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{alice_password}}",
+              "type": "string"
+            }
+          ]
         }
       },
       "response": []
+    },
+    {
+      "name": "Other clinic denied",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "alice",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{alice_password}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-002"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clinic B own study",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "bob",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{bob_password}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-002"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clinic B cannot read clinic A",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "bob",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{bob_password}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restricted role denied",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "carol",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{carol_password}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{base_url}}/studies/LAB-001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Anonymous denied",
+      "request": {
+        "method": "GET",
+        "auth": {
+          "type": "noauth"
+        },
+        "url": "{{base_url}}/studies/LAB-001"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Expected HTTP status\", function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
     }
   ],
   "variable": [
     {
       "key": "base_url",
       "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "alice_password",
+      "value": ""
+    },
+    {
+      "key": "bob_password",
+      "value": ""
+    },
+    {
+      "key": "carol_password",
+      "value": ""
     }
   ]
 }

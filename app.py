@@ -1,7 +1,8 @@
+import hmac
 import os
 
 import psycopg
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -13,11 +14,28 @@ DATABASE_URL = os.environ.get(
 
 @app.get("/studies/<study_id>")
 def get_study(study_id):
+    auth = request.authorization
+    if auth is None or auth.type.lower() != "basic" or not auth.username or not auth.password:
+        return unauthorized()
+
     try:
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT study_id, status FROM studies WHERE study_id = %s",
+                    "SELECT clinic_id, role, password_env FROM app_users WHERE username = %s",
+                    (auth.username,),
+                )
+                user = cursor.fetchone()
+                expected_password = os.environ.get(user[2]) if user else None
+                if not expected_password or not hmac.compare_digest(
+                    auth.password.encode("utf-8"), expected_password.encode("utf-8")
+                ):
+                    return unauthorized()
+                if user[1] != "reader":
+                    return jsonify(error="Access denied"), 403
+
+                cursor.execute(
+                    "SELECT study_id, status, clinic_id FROM studies WHERE study_id = %s",
                     (study_id,),
                 )
                 study = cursor.fetchone()
@@ -28,4 +46,15 @@ def get_study(study_id):
     if study is None:
         return jsonify(error="Study not found", study_id=study_id), 404
 
+    if study[2] != user[0]:
+        return jsonify(error="Access denied"), 403
+
     return jsonify(study_id=study[0], status=study[1]), 200
+
+
+def unauthorized():
+    return (
+        jsonify(error="Authentication required"),
+        401,
+        {"WWW-Authenticate": 'Basic realm="SaaS Support Lab"'},
+    )

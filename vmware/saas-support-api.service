@@ -8,6 +8,7 @@ Type=simple
 User=lab
 WorkingDirectory=/home/lab/saas-support-lab
 Environment="DATABASE_URL=dbname=saas_support_lab connect_timeout=5"
+EnvironmentFile=-/etc/saas-support-lab.env
 ExecStart=/home/lab/saas-support-lab/.venv/bin/python -m flask --app app run --host 0.0.0.0 --port 8000
 Restart=on-failure
 RestartSec=3

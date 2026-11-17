@@ -24,5 +24,6 @@ runcmd:
   - [sudo, -u, postgres, createdb, -O, lab, saas_support_lab]
   - [sudo, -u, lab, git, clone, https://github.com/juanjosejimenezcatalan-boop/saas-support-lab.git, /home/lab/saas-support-lab]
   - [sudo, -u, lab, psql, -d, saas_support_lab, -v, ON_ERROR_STOP=1, -f, /home/lab/saas-support-lab/sql/01-setup.sql]
+  - [sudo, -u, lab, psql, -d, saas_support_lab, -v, ON_ERROR_STOP=1, -f, /home/lab/saas-support-lab/sql/02-access-control.sql]
   - [sudo, -u, lab, python3, -m, venv, /home/lab/saas-support-lab/.venv]
   - [sudo, -u, lab, /home/lab/saas-support-lab/.venv/bin/python, -m, pip, install, -r, /home/lab/saas-support-lab/requirements.txt]

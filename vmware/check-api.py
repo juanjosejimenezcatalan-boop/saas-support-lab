@@ -1,13 +1,17 @@
 """Check the VM API using only the Python standard library."""
+import base64
+import os
 import json
 import sys
 from urllib.error import HTTPError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
+credentials = os.environ['LAB_API_USERNAME'] + ':' + os.environ['LAB_API_PASSWORD']
+headers = {'Authorization': 'Basic ' + base64.b64encode(credentials.encode()).decode()}
 base_url = sys.argv[1].rstrip("/")
 for study_id, expected_code in (("LAB-001", 200), ("LAB-999", 404)):
     try:
-        response = urlopen(f"{base_url}/studies/{study_id}", timeout=10)
+        response = urlopen(Request(f"{base_url}/studies/{study_id}", headers=headers), timeout=10)
     except HTTPError as error:
         response = error
     with response:
