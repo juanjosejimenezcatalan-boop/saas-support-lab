@@ -122,3 +122,7 @@ The Postman collection includes token issuance, authorized Bearer access, a
 cross-clinic denial and an invalid token. Its exported secret values are empty.
 The PostgreSQL regression suite now contains 21 tests, including token expiry,
 role changes, migration reruns, report results and interval boundaries.
+
+The [VM validation update](vmware/validation.md#updated-application-validation--17-november-2026)
+records live access-control and token checks on both servers, 21 regression tests
+on Ubuntu and successful Newman runs of all 11 collection requests.

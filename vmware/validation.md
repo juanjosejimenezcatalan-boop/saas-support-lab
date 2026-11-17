@@ -87,3 +87,56 @@ verified on the VM described above. Postman GUI tests were previously performed
 against the Mac service; this VM's 200/404 checks were executed with the included
 Python checker and curl/nc. ESXi, vCenter, bridged networking, TLS, authentication
 and load testing are outside these results.
+
+## Updated application validation · 17 November 2026
+
+Updated the guest to application commit `5542b0f`, installed the pinned
+requirements and applied migrations 02 and 03 plus synthetic fixture script 04.
+Configured local practice passwords and the signing secret in a root-owned mode
+600 EnvironmentFile, then restarted the systemd API service. These values are
+not included in this repository.
+
+The Mac's original lab database was migrated too. Its existing LAB-001 remains
+published; the independent VM copy remains received. No historical status was
+reset by the migrations.
+
+### Live access and tokens
+
+From the Mac, tested both the Mac API and the VM API. Each environment passed
+11 live HTTP checks covering Basic Auth, both clinic-isolation directions,
+restricted roles, missing studies, anonymous denial, token issuance, authorized
+Bearer access, cross-clinic Bearer denial and a tampered token.
+
+The complete exported Postman collection was also executed locally with Newman
+against each server. Each run completed 11 requests and 13 assertions with zero
+failures. Credentials were injected locally and no issued tokens were exported.
+The desktop Postman collection was imported separately without credential values.
+
+### Guest regression and reports
+
+All 21 PostgreSQL-backed unittest cases passed inside Ubuntu with Python 3.12
+and PostgreSQL 16. The tests use and remove a separate temporary schema. They
+include controlled-clock expiry and secret rotation checks.
+
+Running the report script against the guest lab database returned:
+
+| Clinic | Failure events | Affected studies |
+| --- | --- | --- |
+| clinic_a | 3 | 2 |
+| clinic_b | 1 | 1 |
+
+The detail report showed SQL-A001 received after two failures, SQL-A002 published
+after one failure and SQL-B001 received after one failure. Two original events
+retained unknown timestamps.
+
+### Updated snapshot
+
+Created an additional snapshot named `access-tokens-ready` after a clean guest
+shutdown. The original `baseline-api-working` remains available for the earlier
+exercise. Restarted the updated guest and repeated the complete Newman collection
+successfully. The new snapshot contains local practice credential configuration;
+keep VM disks and snapshots private and outside Git.
+
+The earlier snapshot rollback test remains recorded above. The new snapshot's
+creation and subsequent normal boot were verified; a rollback to this additional
+snapshot was not separately performed.
